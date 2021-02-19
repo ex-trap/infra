@@ -31,8 +31,8 @@ resource "google_cloudfunctions_function" "resurrection" {
   name = "resurrection"
 
   runtime             = "nodejs14"
-  entry_point         = "ressurect"
-  timeout             = 300
+  entry_point         = "resurrect"
+  timeout             = 540
   available_memory_mb = 128
 
   service_account_email = google_service_account.resurrection_agent.email

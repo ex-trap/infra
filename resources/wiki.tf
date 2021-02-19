@@ -38,7 +38,7 @@ resource "google_compute_instance" "wiki_instance" {
 
   metadata = {
     shutdown-script    = file("../resurrection/shutdown-script.py")
-    ressurection-topic = google_pubsub_topic.resurrection_topic.id
+    resurrection-topic = google_pubsub_topic.resurrection_topic.id
   }
 
   depends_on = [google_compute_project_metadata.ssh_keys]
