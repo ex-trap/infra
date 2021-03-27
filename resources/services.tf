@@ -1,6 +1,7 @@
 resource "google_project_service" "service" {
   for_each = toset([
     "iam.googleapis.com",
+    "dns.googleapis.com",
     "pubsub.googleapis.com",
     "compute.googleapis.com",
     "cloudbuild.googleapis.com",
