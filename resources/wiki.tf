@@ -1,6 +1,5 @@
 resource "google_compute_address" "wiki_ip" {
-  name   = "wiki"
-  region = local.region
+  name = "wiki"
 }
 
 resource "google_compute_instance" "wiki_instance" {

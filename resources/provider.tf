@@ -1,16 +1,16 @@
-variable "project" {}
-
-locals {
-  region = "asia-northeast1"
-}
-
 terraform {
   backend "gcs" {
-    prefix = "ex-trap-infra"
+    bucket = "tfstate-1078290191738"
+    prefix = "resources"
   }
 }
 
 provider "google" {
-  project = var.project
+  project = "ex-trap"
   region  = local.region
+}
+
+locals {
+  project_id = "1078290191738"
+  region     = "asia-northeast1"
 }

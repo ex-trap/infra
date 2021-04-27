@@ -23,7 +23,7 @@ resource "google_storage_bucket_object" "resurrection_source" {
 }
 
 resource "google_storage_bucket" "resurrection_source_bucket" {
-  name     = "${var.project}-resurrection-source"
+  name     = "resurrection-source-${local.project_id}"
   location = local.region
 }
 
