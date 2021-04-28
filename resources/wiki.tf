@@ -1,3 +1,5 @@
+# Deprecated. This file will be deleted!
+
 resource "google_compute_address" "wiki_ip" {
   name = "wiki"
 }

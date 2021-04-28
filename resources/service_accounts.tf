@@ -1,3 +1,5 @@
+# Deprecated. This file will be deleted!
+
 resource "google_service_account" "resurrection_agent" {
   account_id   = "resurrection-agent"
   display_name = "resurrection-agent"

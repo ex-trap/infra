@@ -1,3 +1,5 @@
+# Deprecated. This file will be deleted!
+
 data "google_compute_network" "default_network" {
   name = "default"
 }
