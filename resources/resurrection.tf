@@ -1,3 +1,8 @@
+resource "google_service_account" "resurrection_agent" {
+  account_id   = "resurrection-agent"
+  display_name = "resurrection-agent"
+}
+
 data "archive_file" "resurrection_source_archive" {
   type        = "zip"
   output_path = "resurrection-source.zip"
