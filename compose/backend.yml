@@ -1,0 +1,33 @@
+version: "3.9"
+
+networks:
+  backend:
+    name: backend
+    external: true
+
+services:
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - backend
+
+  mongo:
+    image: mongo
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - ./data/mongo:/data/db
+
+  elasticsearch:
+    build: ./elasticsearch
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      discovery.type: single-node
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: -Xms256m -Xms256m

@@ -1,0 +1,26 @@
+version: "3.9"
+
+networks:
+  frontend:
+    name: frontend
+    external: true
+  backend:
+    name: backend
+    external: true
+
+services:
+  crowi:
+    image: crowi/crowi:1.7.9
+    restart: always
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ./data/crowi:/crowi/public/uploads
+    environment:
+      # DEBUG: "crowi:*"
+      REDIS_URL: redis://redis:6379/crowi
+      MONGO_URI: mongodb://mongo:27017/crowi
+      ELASTICSEARCH_URI: http://elasticsearch:9200/crowi
+      FILE_UPLOAD: local
+      MATHJAX: 1
