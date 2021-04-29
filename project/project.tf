@@ -35,5 +35,6 @@ resource "google_project_iam_binding" "owners" {
   members = [
     "serviceAccount:${google_service_account.terraform_agent.email}",
     "user:sekai6715@gmail.com",
+    "user:tohu.soy@gmail.com",
   ]
 }
