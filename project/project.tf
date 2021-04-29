@@ -28,11 +28,18 @@ resource "google_project_service" "services" {
   disable_on_destroy = false
 }
 
-resource "google_project_iam_binding" "owners" {
+resource "google_project_iam_member" "owner" {
   project = google_project.ex_trap.project_id
   role    = "roles/owner"
 
+  member = "serviceAccount:${google_service_account.terraform.email}"
+}
+
+resource "google_project_iam_binding" "editors" {
+  project = google_project.ex_trap.project_id
+  role    = "roles/editor"
+
   members = [
-    "serviceAccount:${google_service_account.terraform_agent.email}",
+    "group:ex-trap-sysad@googlegroups.com",
   ]
 }

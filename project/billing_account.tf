@@ -7,7 +7,7 @@ resource "google_billing_account_iam_binding" "billing_user" {
   role               = "roles/billing.user"
 
   members = [
-    "serviceAccount:${google_service_account.terraform_agent.email}",
+    "serviceAccount:${google_service_account.terraform.email}",
   ]
 }
 
@@ -16,6 +16,6 @@ resource "google_billing_account_iam_binding" "billing_viewer" {
   role               = "roles/billing.viewer"
 
   members = [
-    "serviceAccount:${google_service_account.terraform_agent.email}",
+    "serviceAccount:${google_service_account.terraform.email}",
   ]
 }
