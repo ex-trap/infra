@@ -76,8 +76,7 @@ resource "google_service_account" "cron_sslcert" {
 
 resource "google_cloud_scheduler_job" "renew_certificate" {
   name      = "renew-certificate"
-  schedule  = "0 12 1 */2 *"
-  time_zone = "Asia/Tokyo"
+  schedule  = "0 0 1 */2 *"
 
   http_target {
     http_method = "POST"
