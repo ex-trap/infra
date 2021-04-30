@@ -1,11 +1,11 @@
-resource "google_service_account" "resurrection_agent" {
-  account_id   = "resurrection-agent"
-  display_name = "resurrection-agent"
+resource "google_service_account" "necromancer" {
+  account_id   = "necromancer"
+  display_name = "necromancer"
 }
 
-data "archive_file" "resurrection_source_archive" {
+data "archive_file" "resurrect_source" {
   type        = "zip"
-  output_path = "resurrection-source.zip"
+  output_path = "resurrect-source.zip"
 
   dynamic "source" {
     for_each = [
@@ -21,45 +21,43 @@ data "archive_file" "resurrection_source_archive" {
   }
 }
 
-resource "google_storage_bucket_object" "resurrection_source" {
-  name   = "resurrection-source-${data.archive_file.resurrection_source_archive.output_md5}.zip"
-  bucket = google_storage_bucket.resurrection_source_bucket.name
-  source = data.archive_file.resurrection_source_archive.output_path
+resource "google_storage_bucket_object" "resurrect_source" {
+  name   = "resurrect-source-${data.archive_file.resurrect_source.output_md5}.zip"
+  bucket = google_storage_bucket.resurrect_source.name
+  source = data.archive_file.resurrect_source.output_path
 }
 
-resource "google_storage_bucket" "resurrection_source_bucket" {
-  name     = "resurrection-source-${data.google_project.ex_trap.number}"
+resource "google_storage_bucket" "resurrect_source" {
+  name     = "resurrect-source-${data.google_project.ex_trap.number}"
   location = local.region
 }
 
-resource "google_cloudfunctions_function" "resurrection" {
-  name = "resurrection"
+resource "google_cloudfunctions_function" "resurrect" {
+  name = "resurrect"
 
   runtime             = "nodejs14"
   entry_point         = "resurrect"
   timeout             = 540
   available_memory_mb = 128
 
-  service_account_email = google_service_account.resurrection_agent.email
-  source_archive_bucket = google_storage_bucket.resurrection_source_bucket.name
-  source_archive_object = google_storage_bucket_object.resurrection_source.name
+  service_account_email = google_service_account.necromancer.email
+  source_archive_bucket = google_storage_bucket.resurrect_source.name
+  source_archive_object = google_storage_bucket_object.resurrect_source.name
 
   event_trigger {
     event_type = "providers/cloud.pubsub/eventTypes/topic.publish"
-    resource   = google_pubsub_topic.resurrection_topic.id
+    resource   = google_pubsub_topic.call_of_the_dead.id
   }
 }
 
-resource "google_pubsub_topic" "resurrection_topic" {
-  name = "resurrection-topic"
+resource "google_pubsub_topic" "call_of_the_dead" {
+  name = "call-of-the-dead"
 }
+resource "google_pubsub_topic_iam_binding" "call_of_the_dead_publisher" {
+  topic = google_pubsub_topic.call_of_the_dead.name
+  role  = "roles/pubsub.publisher"
 
-resource "google_cloud_scheduler_job" "resurrection_job_for_wiki" {
-  name     = "resurrection-job-for-wiki"
-  schedule = "*/15 * * * *"
-
-  pubsub_target {
-    topic_name = google_pubsub_topic.resurrection_topic.id
-    data       = base64encode("zone=${google_compute_instance.wiki_instance.zone}&instance=${google_compute_instance.wiki_instance.name}&timeout=0")
-  }
+  members = [
+    "serviceAccount:${google_service_account.midorigaoka.email}",
+  ]
 }

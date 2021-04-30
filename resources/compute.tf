@@ -22,9 +22,11 @@ resource "google_service_account" "midorigaoka" {
   account_id   = "midorigaoka"
   display_name = "midorigaoka"
 }
+
 resource "google_compute_address" "midorigaoka" {
   name = "midorigaoka"
 }
+
 resource "google_compute_instance" "midorigaoka" {
   name         = "midorigaoka"
   machine_type = "e2-small"
@@ -65,6 +67,25 @@ resource "google_compute_instance" "midorigaoka" {
     certs-name     = "ex.trap.jp"
 
     shutdown-script    = file("../resurrection/shutdown-script.py")
-    resurrection-topic = google_pubsub_topic.resurrection_topic.id
+    resurrection-topic = google_pubsub_topic.call_of_the_dead.id
+  }
+}
+resource "google_compute_instance_iam_binding" "midorigaoka_instance_admin" {
+  zone          = google_compute_instance.midorigaoka.zone
+  instance_name = google_compute_instance.midorigaoka.name
+  role          = "roles/compute.instanceAdmin"
+
+  members = [
+    "serviceAccount:${google_service_account.necromancer.email}",
+  ]
+}
+
+resource "google_cloud_scheduler_job" "resurrect_midorigaoka" {
+  name     = "resurrect-midorigaoka"
+  schedule = "*/10 * * * *"
+
+  pubsub_target {
+    topic_name = google_pubsub_topic.call_of_the_dead.id
+    data       = base64encode("zone=${google_compute_instance.midorigaoka.zone}&instance=${google_compute_instance.midorigaoka.name}&timeout=0")
   }
 }
