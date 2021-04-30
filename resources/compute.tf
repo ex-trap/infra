@@ -89,3 +89,20 @@ resource "google_cloud_scheduler_job" "resurrect_midorigaoka" {
     data       = base64encode("zone=${google_compute_instance.midorigaoka.zone}&instance=${google_compute_instance.midorigaoka.name}&timeout=0")
   }
 }
+
+resource "google_compute_resource_policy" "midorigaoka_backup" {
+  name   = "midorigaoka-backup"
+
+  snapshot_schedule_policy {
+    schedule {
+      daily_schedule {
+        days_in_cycle = 1
+        start_time    = "16:00"
+      }
+    }
+
+    retention_policy {
+      max_retention_days=30
+    }
+  }
+}
