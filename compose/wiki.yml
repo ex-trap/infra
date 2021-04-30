@@ -10,13 +10,13 @@ networks:
 
 services:
   crowi:
-    image: crowi/crowi:1.7.9
+    image: crowi/crowi
     restart: always
     networks:
       - frontend
       - backend
     volumes:
-      - ./data/crowi:/crowi/public/uploads
+      - /var/opt/data/crowi:/crowi/public/uploads
     environment:
       # DEBUG: "crowi:*"
       REDIS_URL: redis://redis:6379/crowi

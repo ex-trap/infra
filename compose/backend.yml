@@ -11,6 +11,8 @@ services:
     restart: always
     networks:
       - backend
+    volumes:
+      - /var/opt/data/redis:/data
 
   mongo:
     image: mongo
@@ -18,15 +20,15 @@ services:
     networks:
       - backend
     volumes:
-      - ./data/mongo:/data/db
+      - /var/opt/data/mongo:/data/db
 
   elasticsearch:
-    build: ./elasticsearch
+    image: ghcr.io/traptitech/es-with-sudachi:7.10.2-2.1.1-snapshot
     restart: always
     networks:
       - backend
     volumes:
-      - ./data/elasticsearch:/usr/share/elasticsearch/data
+      - /var/opt/data/elasticsearch:/usr/share/elasticsearch/data
     environment:
       discovery.type: single-node
       bootstrap.memory_lock: "true"
