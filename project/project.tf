@@ -19,6 +19,7 @@ resource "google_project_service" "services" {
     "iam.googleapis.com",
     "oslogin.googleapis.com",
     "pubsub.googleapis.com",
+    "secretmanager.googleapis.com",
     "serviceusage.googleapis.com",
   ])
 

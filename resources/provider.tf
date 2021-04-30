@@ -11,6 +11,5 @@ provider "google" {
 }
 
 locals {
-  project_id = "1078290191738"
-  region     = "asia-northeast1"
+  region = "asia-northeast1"
 }

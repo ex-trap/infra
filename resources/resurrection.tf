@@ -28,7 +28,7 @@ resource "google_storage_bucket_object" "resurrection_source" {
 }
 
 resource "google_storage_bucket" "resurrection_source_bucket" {
-  name     = "resurrection-source-${local.project_id}"
+  name     = "resurrection-source-${data.google_project.ex_trap.number}"
   location = local.region
 }
 
