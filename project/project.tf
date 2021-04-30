@@ -22,23 +22,17 @@ resource "google_project_service" "services" {
     "secretmanager.googleapis.com",
     "serviceusage.googleapis.com",
   ])
-
-  project = google_project.ex_trap.project_id
   service = each.key
 
   disable_on_destroy = false
 }
 
 resource "google_project_iam_member" "owner" {
-  project = google_project.ex_trap.project_id
-  role    = "roles/owner"
-
+  role   = "roles/owner"
   member = "serviceAccount:${google_service_account.terraform.email}"
 }
 
 resource "google_project_iam_member" "editor" {
-  project = google_project.ex_trap.project_id
-  role    = "roles/editor"
-
+  role   = "roles/editor"
   member = "group:ex-trap-sysad@googlegroups.com"
 }

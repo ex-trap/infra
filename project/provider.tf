@@ -6,4 +6,10 @@ terraform {
 }
 
 provider "google" {
+  project = "ex-trap"
+  region  = local.region
+}
+
+locals {
+  region = "asia-northeast1"
 }
