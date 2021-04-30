@@ -35,11 +35,9 @@ resource "google_project_iam_member" "owner" {
   member = "serviceAccount:${google_service_account.terraform.email}"
 }
 
-resource "google_project_iam_binding" "editors" {
+resource "google_project_iam_member" "editor" {
   project = google_project.ex_trap.project_id
   role    = "roles/editor"
 
-  members = [
-    "group:ex-trap-sysad@googlegroups.com",
-  ]
+  member = "group:ex-trap-sysad@googlegroups.com"
 }
