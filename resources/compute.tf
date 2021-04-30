@@ -1,3 +1,23 @@
+data "google_compute_network" "default" {
+  name = "default"
+}
+
+locals {
+  allow_http_tag = "allow-http"
+}
+
+resource "google_compute_firewall" "allow_http" {
+  name    = local.allow_http_tag
+  network = data.google_compute_network.default.name
+
+  target_tags = [local.allow_http_tag]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "443"]
+  }
+}
+
 resource "google_service_account" "midorigaoka" {
   account_id   = "midorigaoka"
   display_name = "midorigaoka"
@@ -10,10 +30,10 @@ resource "google_compute_instance" "midorigaoka" {
   machine_type = "e2-small"
   zone         = "${local.region}-b"
 
-  allow_stopping_for_update = true
-
+  tags = [local.allow_http_tag]
   network_interface {
-    network = "default"
+    network = data.google_compute_network.default.name
+
     access_config {
       nat_ip = google_compute_address.midorigaoka.address
     }

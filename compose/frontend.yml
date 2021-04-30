@@ -7,11 +7,13 @@ networks:
 
 services:
   nginx:
-    build: ./nginx
+    image: nginx:alpine
     restart: always
     networks:
       - frontend
     volumes:
       - ./nginx:/etc/nginx/conf.d:ro
+      - /var/opt/ssl:/etc/nginx/ssl:ro
     ports:
+      - 80:80
       - 443:443
