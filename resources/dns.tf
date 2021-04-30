@@ -1,6 +1,10 @@
+locals {
+  domain = "ex.trap.jp"
+}
+
 resource "google_dns_managed_zone" "ex_trap_jp" {
   name     = "ex-trap-jp"
-  dns_name = "ex.trap.jp."
+  dns_name = "${local.domain}."
 }
 
 resource "google_dns_record_set" "midorigaoka" {

@@ -64,7 +64,7 @@ resource "google_compute_instance" "midorigaoka" {
 
     startup-script = file("../sslcert/startup-script.py")
     certs-bucket   = google_storage_bucket.certificates.name
-    certs-name     = "ex.trap.jp"
+    certs-name     = local.domain
 
     shutdown-script    = file("../resurrection/shutdown-script.py")
     resurrection-topic = google_pubsub_topic.call_of_the_dead.id
@@ -91,7 +91,7 @@ resource "google_cloud_scheduler_job" "resurrect_midorigaoka" {
 }
 
 resource "google_compute_resource_policy" "midorigaoka_backup" {
-  name   = "midorigaoka-backup"
+  name = "midorigaoka-backup"
 
   snapshot_schedule_policy {
     schedule {
@@ -102,7 +102,7 @@ resource "google_compute_resource_policy" "midorigaoka_backup" {
     }
 
     retention_policy {
-      max_retention_days=30
+      max_retention_days = 30
     }
   }
 }
