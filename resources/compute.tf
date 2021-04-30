@@ -39,7 +39,12 @@ resource "google_compute_instance" "midorigaoka" {
   metadata = {
     enable-oslogin         = "TRUE"
     block-project-ssh-keys = "TRUE"
-    shutdown-script        = file("../resurrection/shutdown-script.py")
-    resurrection-topic     = google_pubsub_topic.resurrection_topic.id
+
+    startup-script = file("../sslcert/startup-script.py")
+    certs-bucket   = google_storage_bucket.certificates.name
+    certs-name     = "ex.trap.jp"
+
+    shutdown-script    = file("../resurrection/shutdown-script.py")
+    resurrection-topic = google_pubsub_topic.resurrection_topic.id
   }
 }

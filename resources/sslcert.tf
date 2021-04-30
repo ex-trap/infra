@@ -28,6 +28,14 @@ resource "google_storage_bucket_iam_binding" "certificates_object_admin" {
     "serviceAccount:${google_service_account.sslcert.email}",
   ]
 }
+resource "google_storage_bucket_iam_binding" "certificates_object_viewer" {
+  bucket = google_storage_bucket.certificates.name
+  role   = "roles/storage.objectViewer"
+
+  members = [
+    "serviceAccount:${google_service_account.midorigaoka.email}",
+  ]
+}
 
 resource "google_secret_manager_secret" "zerossl_email" {
   secret_id = "zerossl-email"
