@@ -10,7 +10,7 @@ networks:
 
 services:
   crowi:
-    image: crowi/crowi
+    image: ghcr.io/ex-trap/crowi
     restart: always
     networks:
       - frontend
