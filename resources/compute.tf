@@ -18,6 +18,23 @@ resource "google_compute_firewall" "allow_http" {
   }
 }
 
+resource "google_compute_resource_policy" "daily_backup" {
+  name = "daily-backup"
+
+  snapshot_schedule_policy {
+    schedule {
+      daily_schedule {
+        days_in_cycle = 1
+        start_time    = "16:00"
+      }
+    }
+
+    retention_policy {
+      max_retention_days = 30
+    }
+  }
+}
+
 resource "google_service_account" "midorigaoka" {
   account_id   = "midorigaoka"
   display_name = "midorigaoka"
@@ -30,7 +47,6 @@ resource "google_compute_address" "midorigaoka" {
 resource "google_compute_instance" "midorigaoka" {
   name         = "midorigaoka"
   machine_type = "e2-small"
-  zone         = "${local.region}-b"
 
   tags = [local.allow_http_tag]
   network_interface {
@@ -90,19 +106,7 @@ resource "google_cloud_scheduler_job" "resurrect_midorigaoka" {
   }
 }
 
-resource "google_compute_resource_policy" "midorigaoka_backup" {
-  name = "midorigaoka-backup"
-
-  snapshot_schedule_policy {
-    schedule {
-      daily_schedule {
-        days_in_cycle = 1
-        start_time    = "16:00"
-      }
-    }
-
-    retention_policy {
-      max_retention_days = 30
-    }
-  }
+resource "google_compute_disk_resource_policy_attachment" "backup_midorigaoka" {
+  name = google_compute_resource_policy.daily_backup.name
+  disk = google_compute_instance.midorigaoka.name
 }
