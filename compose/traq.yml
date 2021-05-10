@@ -1,0 +1,39 @@
+version: "3.9"
+
+networks:
+  frontend:
+    name: frontend
+    external: true
+  backend:
+    name: backend
+    external: true
+
+services:
+  traq:
+    image: ghcr.io/traptitech/traq:3.7.2
+    restart: always
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - /var/opt/data/traq:/app/storage
+      - /var/opt/compose/traq/config.yml:/app/config.yml
+      - /var/opt/compose/traq/ex-trap-firebase-admin-sdk-credential.json:/app/ex-trap-firebase-admin-sdk-credential.json
+    environment:
+      TRAQ_ORIGIN: https://q.ex.trap.jp
+      TRAQ_MARIADB_HOST: mysql
+      TRAQ_ES_URL: http://elasticsearch:9200
+      TRAQ_PPROF: "false"
+    entrypoint: dockerize -timeout 60s -wait tcp://mysql:3306 -wait http://elasticsearch:9200
+    command: ./traQ serve
+
+  traq-ui:
+    image: ghcr.io/traptitech/traq-ui:3.10.5
+    restart: always
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - traq
+    volumes:
+      - ./traq/frontend-override/:/app/override
