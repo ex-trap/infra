@@ -30,6 +30,7 @@ const config = {
     changeLink: undefined,
     changeName: undefined
   },
+  enableSearch: true,
   pipelineEnabled: false,
   isRootChannelSelectableAsParentChannel: true,
   showQrCodeButton: false,
