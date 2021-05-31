@@ -17,10 +17,14 @@ services:
       - backend
     volumes:
       - /var/opt/data/crowi:/crowi/public/uploads
+    env_file:
+      - ./crowi/.env
     environment:
-      # DEBUG: "crowi:*"
+      BASE_URL: https://wiki.ex.trap.jp
+      TRAQ_URL: https://q.ex.trap.jp
       REDIS_URL: redis://redis:6379/crowi
       MONGO_URI: mongodb://mongo:27017/crowi
       ELASTICSEARCH_URI: http://elasticsearch:9200/crowi
       FILE_UPLOAD: local
       MATHJAX: 1
+      # DEBUG: "crowi:*"
