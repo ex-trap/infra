@@ -1,6 +1,12 @@
 data "google_project" "ex_trap" {
 }
 
+resource "google_project_iam_member" "secretmanager_admin" {
+  project = data.google_project.ex_trap.project_id
+  role    = "roles/secretmanager.admin"
+  member  = "group:ex-trap-sysad@googlegroups.com"
+}
+
 resource "google_project_iam_member" "dns_admin" {
   project = data.google_project.ex_trap.project_id
   role    = "roles/dns.admin"

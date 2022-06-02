@@ -44,29 +44,36 @@ resource "google_secret_manager_secret" "zerossl_email" {
     automatic = true
   }
 }
-resource "google_secret_manager_secret_iam_binding" "zerossl_email_secret_accessor" {
+resource "google_secret_manager_secret_iam_member" "zerossl_email_secret_accessor" {
   secret_id = google_secret_manager_secret.zerossl_email.id
   role      = "roles/secretmanager.secretAccessor"
-
-  members = [
-    "serviceAccount:${google_service_account.certbot.email}",
-  ]
+  member    = "serviceAccount:${google_service_account.certbot.email}"
 }
 
-resource "google_secret_manager_secret" "zerossl_apikey" {
-  secret_id = "zerossl-apikey"
+resource "google_secret_manager_secret" "zerossl_eab_kid" {
+  secret_id = "zerossl-eab-kid"
 
   replication {
     automatic = true
   }
 }
-resource "google_secret_manager_secret_iam_binding" "zerossl_apikey_secret_accessor" {
-  secret_id = google_secret_manager_secret.zerossl_apikey.id
+resource "google_secret_manager_secret_iam_member" "zerossl_eab_kid_secret_accessor" {
+  secret_id = google_secret_manager_secret.zerossl_eab_kid.id
   role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.certbot.email}"
+}
 
-  members = [
-    "serviceAccount:${google_service_account.certbot.email}",
-  ]
+resource "google_secret_manager_secret" "zerossl_eab_hmac_key" {
+  secret_id = "zerossl-eab-hmac-key"
+
+  replication {
+    automatic = true
+  }
+}
+resource "google_secret_manager_secret_iam_member" "zerossl_eab_hmac_key_secret_accessor" {
+  secret_id = google_secret_manager_secret.zerossl_eab_hmac_key.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.certbot.email}"
 }
 
 resource "google_service_account" "renew_cert_trigger" {
@@ -75,8 +82,10 @@ resource "google_service_account" "renew_cert_trigger" {
 }
 
 resource "google_cloud_scheduler_job" "renew_certificate" {
-  name     = "renew-certificate"
-  schedule = "0 0 1 */2 *"
+  name = "renew-certificate"
+
+  time_zone = "Asia/Tokyo"
+  schedule  = "0 12 1 * *"
 
   http_target {
     http_method = "POST"

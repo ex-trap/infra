@@ -15,27 +15,23 @@ steps:
     args:
       - -c
       - |-
-        gcloud secrets versions access latest --secret=zerossl-email > zerossl-email.txt
-        gcloud secrets versions access latest --secret=zerossl-apikey > zerossl-apikey.txt
+        gcloud secrets versions access latest --secret=zerossl-email > email
+        gcloud secrets versions access latest --secret=zerossl-eab-kid > eab-kid
+        gcloud secrets versions access latest --secret=zerossl-eab-hmac-key > eab-hmac-key
 
   - name: certbot/dns-google
     entrypoint: sh
     args:
       - -c
       - |-
-        apk add jq curl
-
-        ZEROSSL_EMAIL=$$(cat zerossl-email.txt)
-        ZEROSSL_APIKEY=$$(cat zerossl-apikey.txt)
-
-        EAB=$$(curl -X POST "https://api.zerossl.com/acme/eab-credentials?access_key=$$ZEROSSL_APIKEY")
-        EAB_KID=$$(echo $$EAB | jq -r .eab_kid)
-        EAB_HMAC=$$(echo $$EAB | jq -r .eab_hmac_key)
+        EMAIL=$$(cat email)
+        EAB_KID=$$(cat eab-kid)
+        EAB_HMAC_KEY=$$(cat eab-hmac-key)
 
         certbot certonly --non-interactive --dns-google \
         --server "https://acme.zerossl.com/v2/DV90" \
-        --eab-kid "$$EAB_KID" --eab-hmac-key "$$EAB_HMAC" \
-        --email "$$ZEROSSL_EMAIL" --agree-tos \
+        --eab-kid "$$EAB_KID" --eab-hmac-key "$$EAB_HMAC_KEY" \
+        --email "$$EMAIL" --agree-tos \
         --key-type ecdsa --elliptic-curve secp256r1 \
         --domains "{{domain}}" --domains "*.{{domain}}"
 
