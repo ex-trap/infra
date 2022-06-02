@@ -28,11 +28,13 @@ resource "google_project_service" "services" {
 }
 
 resource "google_project_iam_member" "owner" {
-  role   = "roles/owner"
-  member = "serviceAccount:${google_service_account.terraform.email}"
+  project = google_project.ex_trap.project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.terraform.email}"
 }
 
 resource "google_project_iam_member" "editor" {
-  role   = "roles/editor"
-  member = "group:ex-trap-sysad@googlegroups.com"
+  project = google_project.ex_trap.project_id
+  role    = "roles/editor"
+  member  = "group:ex-trap-sysad@googlegroups.com"
 }
