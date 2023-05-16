@@ -1,16 +1,13 @@
 data "google_compute_network" "default" {
   name = "default"
 }
-
-resource "google_compute_address" "suzukakedai" {
-  name = "suzukakedai"
-}
-
 resource "google_service_account" "suzukakedai" {
   account_id   = "suzukakedai"
   display_name = "suzukakedai"
 }
-
+resource "google_compute_address" "suzukakedai" {
+  name = "suzukakedai"
+}
 resource "google_compute_firewall" "suzukakedai" {
   name    = "suzukakedai"
   network = data.google_compute_network.default.name
@@ -32,15 +29,44 @@ resource "google_compute_firewall" "suzukakedai" {
   }
 }
 
+resource "google_compute_disk" "suzukakedai" {
+  name = "suzukakedai"
+  zone = "asia-northeast1-c"
+
+  type  = "pd-balanced"
+  size  = 30
+
+  # image = "cos-cloud/cos-stable"
+}
+resource "google_compute_resource_policy" "daily_backup" {
+  name = "daily-backup"
+
+  snapshot_schedule_policy {
+    schedule {
+      daily_schedule {
+        days_in_cycle = 1
+        start_time    = "20:00"
+      }
+    }
+
+    retention_policy {
+      max_retention_days = 60
+    }
+  }
+}
+resource "google_compute_disk_resource_policy_attachment" "daily_backup_suzukakedai" {
+  name = google_compute_resource_policy.daily_backup.name
+  zone = google_compute_disk.suzukakedai.zone
+  disk = google_compute_disk.suzukakedai.name
+}
+
 resource "google_compute_instance_template" "suzukakedai" {
   name         = "suzukakedai"
-  machine_type = "e2-medium"
+  machine_type = "e2-small"
 
-  disk {
-    disk_type    = "pd-balanced"
-    disk_size_gb = 30
-    boot         = true
-    source_image = "cos-cloud/cos-stable"
+  service_account {
+    email  = google_service_account.suzukakedai.email
+    scopes = ["cloud-platform"]
   }
 
   network_interface {
@@ -51,20 +77,22 @@ resource "google_compute_instance_template" "suzukakedai" {
     }
   }
 
+  disk {
+    source      = google_compute_disk.suzukakedai.name
+    auto_delete = false
+    boot        = true
+  }
+
   scheduling {
-    preemptible       = true
-    automatic_restart = false
+    provisioning_model = "SPOT"
+    preemptible        = true
+    automatic_restart  = false
   }
 
   shielded_instance_config {
     enable_vtpm                 = true
     enable_secure_boot          = true
     enable_integrity_monitoring = true
-  }
-
-  service_account {
-    email  = google_service_account.suzukakedai.email
-    scopes = ["cloud-platform"]
   }
 
   metadata = {
@@ -124,30 +152,4 @@ resource "google_compute_region_instance_group_manager" "suzukakedai" {
     health_check      = google_compute_health_check.suzukakedai.id
     initial_delay_sec = 20
   }
-}
-
-resource "google_compute_resource_policy" "daily_backup" {
-  name = "daily-backup"
-
-  snapshot_schedule_policy {
-    schedule {
-      daily_schedule {
-        days_in_cycle = 1
-        start_time    = "20:00"
-      }
-    }
-
-    retention_policy {
-      max_retention_days = 60
-    }
-  }
-}
-resource "google_compute_disk_resource_policy_attachment" "daily_backup_suzukakedai" {
-  name = google_compute_resource_policy.daily_backup.name
-
-  # instance_group_managerが作成したDisk
-  # （本当はresourceとしてdiskを作って、それをinstance_group_managerに渡したほうがいいのかもしれない）
-  # （できるのか？）
-  zone = "asia-northeast1-c"
-  disk = "suzukakedai-397d"
 }
