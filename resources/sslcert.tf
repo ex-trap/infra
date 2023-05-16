@@ -33,7 +33,6 @@ resource "google_storage_bucket_iam_binding" "certificates_object_viewer" {
   role   = "roles/storage.objectViewer"
 
   members = [
-    "serviceAccount:${google_service_account.midorigaoka.email}",
     "serviceAccount:${google_service_account.suzukakedai.email}",
   ]
 }
@@ -86,7 +85,7 @@ resource "google_cloud_scheduler_job" "renew_certificate" {
   name = "renew-certificate"
 
   time_zone = "Asia/Tokyo"
-  schedule  = "0 12 1 * *"
+  schedule  = "0 5 20 * *"
 
   http_target {
     http_method = "POST"
