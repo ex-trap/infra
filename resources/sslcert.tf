@@ -34,6 +34,7 @@ resource "google_storage_bucket_iam_binding" "certificates_object_viewer" {
 
   members = [
     "serviceAccount:${google_service_account.midorigaoka.email}",
+    "serviceAccount:${google_service_account.suzukakedai.email}",
   ]
 }
 
