@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   frontend:
     name: frontend
@@ -10,7 +8,7 @@ networks:
 
 services:
   crowi:
-    image: ghcr.io/ex-trap/crowi
+    image: ghcr.io/ex-trap/crowi:2021.05.31
     restart: always
     networks:
       - frontend

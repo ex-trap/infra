@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   frontend:
     name: frontend
@@ -10,7 +8,7 @@ networks:
 
 services:
   traq:
-    image: ghcr.io/traptitech/traq:latest
+    image: ghcr.io/ex-trap/traq:3.7.3
     restart: always
     networks:
       - frontend
@@ -24,11 +22,13 @@ services:
       TRAQ_MARIADB_HOST: mysql
       TRAQ_ES_URL: http://elasticsearch:9200
       TRAQ_PPROF: "false"
+    expose:
+      - "3000"
     entrypoint: dockerize -timeout 60s -wait tcp://mysql:3306 -wait http://elasticsearch:9200
     command: ./traQ serve
 
   traq-ui:
-    image: ghcr.io/traptitech/traq-ui:latest
+    image: ghcr.io/traptitech/traq-ui:3.11.0
     restart: always
     networks:
       - frontend
