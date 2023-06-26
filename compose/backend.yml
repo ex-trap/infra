@@ -21,7 +21,7 @@ services:
       - /var/opt/data/mongo:/data/db
 
   elasticsearch:
-    image: ghcr.io/traptitech/es-with-sudachi:7.10.2-2.1.1-snapshot
+    image: ghcr.io/traptitech/es-with-sudachi:7.17.9-3.0.1
     restart: always
     networks:
       - backend
@@ -33,7 +33,7 @@ services:
       ES_JAVA_OPTS: -Xms256m -Xms256m
 
   mysql:
-    image: mariadb:10.0.19
+    image: mariadb:10.6.4
     restart: always
     networks:
       - backend
