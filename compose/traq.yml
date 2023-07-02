@@ -8,7 +8,7 @@ networks:
 
 services:
   traq:
-    image: ghcr.io/ex-trap/traq:3.7.3
+    image: ghcr.io/traptitech/traq:3.14.0
     restart: always
     networks:
       - frontend
@@ -24,11 +24,10 @@ services:
       TRAQ_PPROF: "false"
     expose:
       - "3000"
-    entrypoint: dockerize -timeout 60s -wait tcp://mysql:3306 -wait http://elasticsearch:9200
-    command: ./traQ serve
+    command: serve
 
   traq-ui:
-    image: ghcr.io/traptitech/traq-ui:3.11.0
+    image: ghcr.io/traptitech/traq-ui:3.17.2
     restart: always
     networks:
       - frontend
