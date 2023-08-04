@@ -1,8 +1,8 @@
-serviceAccount: "%s"
+serviceAccount: "${service_account_id}"
 
 artifacts:
   objects:
-    location: "%s/{{domain}}"
+    location: "${bucket_url}/${domain}"
     paths:
       - "*.pem"
 
@@ -10,29 +10,25 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+  - name: gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
     entrypoint: sh
     args:
       - -c
       - |-
-        gcloud secrets versions access latest --secret=zerossl-email > email
-        gcloud secrets versions access latest --secret=zerossl-eab-kid > eab-kid
-        gcloud secrets versions access latest --secret=zerossl-eab-hmac-key > eab-hmac-key
+        gcloud publicca external-account-keys create --format "value(.)" > publicca_external_account_keys
 
   - name: certbot/dns-google
     entrypoint: sh
     args:
       - -c
       - |-
-        EMAIL=$$(cat email)
-        EAB_KID=$$(cat eab-kid)
-        EAB_HMAC_KEY=$$(cat eab-hmac-key)
+        . publicca_external_account_keys
 
         certbot certonly --non-interactive --dns-google \
-        --server "https://acme.zerossl.com/v2/DV90" \
-        --eab-kid "$$EAB_KID" --eab-hmac-key "$$EAB_HMAC_KEY" \
-        --email "$$EMAIL" --agree-tos \
-        --key-type ecdsa --elliptic-curve secp256r1 \
-        --domains "{{domain}}" --domains "*.{{domain}}"
+        --server "https://dv.acme-v02.api.pki.goog/directory" \
+        --eab-kid "$$keyId" --eab-hmac-key "$$b64MacKey" \
+        --agree-tos --email "${service_account_email}" \
+        --key-type "ecdsa" --elliptic-curve "secp256r1" \
+        --domains "${domain}" --domains "*.${domain}"
 
-        cp -L /etc/letsencrypt/live/{{domain}}/*.pem .
+        cp -L /etc/letsencrypt/live/${domain}/*.pem .

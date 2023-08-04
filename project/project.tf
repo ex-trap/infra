@@ -4,6 +4,9 @@ resource "google_project" "ex_trap" {
 
   billing_account = data.google_billing_account.account.id
 
+  labels = {
+    firebase = "enabled"
+  }
   skip_delete = true
 }
 
@@ -18,6 +21,7 @@ resource "google_project_service" "services" {
     "dns.googleapis.com",
     "iam.googleapis.com",
     "oslogin.googleapis.com",
+    "publicca.googleapis.com",
     "pubsub.googleapis.com",
     "secretmanager.googleapis.com",
     "serviceusage.googleapis.com",
@@ -30,7 +34,7 @@ resource "google_project_service" "services" {
 resource "google_project_iam_member" "owner" {
   project = google_project.ex_trap.project_id
   role    = "roles/owner"
-  member  = "serviceAccount:${google_service_account.terraform.email}"
+  member  = google_service_account.terraform.member
 }
 
 resource "google_project_iam_member" "editor" {

@@ -33,8 +33,8 @@ resource "google_compute_disk" "suzukakedai" {
   name = "suzukakedai"
   zone = "asia-northeast1-c"
 
-  type  = "pd-balanced"
-  size  = 30
+  type = "pd-balanced"
+  size = 30
 
   # image = "cos-cloud/cos-stable"
 }
@@ -84,9 +84,10 @@ resource "google_compute_instance_template" "suzukakedai" {
   }
 
   scheduling {
-    provisioning_model = "SPOT"
-    preemptible        = true
-    automatic_restart  = false
+    instance_termination_action = "STOP"
+    provisioning_model          = "SPOT"
+    preemptible                 = true
+    automatic_restart           = false
   }
 
   shielded_instance_config {
