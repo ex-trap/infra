@@ -1,0 +1,12 @@
+#cloud-config
+
+timezone: Asia/Tokyo
+
+write_files:
+  - path: /var/lib/sync-certificates.py
+    encoding: base64
+    content: ${sync_certificates_py}
+
+runcmd:
+  - systemd-run --on-active=2m --on-unit-active=1w python /var/lib/sync-certificates.py
+  - systemd-run --on-active=4m --on-unit-active=1w docker restart compose-nginx-1

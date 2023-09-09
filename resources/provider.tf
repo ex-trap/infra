@@ -8,7 +8,10 @@ terraform {
 provider "google" {
   project = "ex-trap"
   region  = local.region
-  zone    = "${local.region}-b"
+}
+provider "google-beta" {
+  project = "ex-trap"
+  region  = local.region
 }
 
 locals {

@@ -12,26 +12,18 @@ resource "google_compute_firewall" "suzukakedai" {
   name    = "suzukakedai"
   network = data.google_compute_network.default.name
 
-  source_ranges = [
-    "0.0.0.0/0",
-  ]
-  target_service_accounts = [
-    google_service_account.suzukakedai.email,
-  ]
+  source_ranges           = ["0.0.0.0/0"]
+  target_service_accounts = [google_service_account.suzukakedai.email, ]
 
   allow {
     protocol = "tcp"
-    ports = [
-      "22",
-      "80",
-      "443",
-    ]
+    ports    = ["22", "80", "443"]
   }
 }
 
 resource "google_compute_disk" "suzukakedai" {
   name = "suzukakedai"
-  zone = "asia-northeast1-c"
+  zone = "${local.region}-c"
 
   type = "pd-balanced"
   size = 30
@@ -61,7 +53,7 @@ resource "google_compute_disk_resource_policy_attachment" "daily_backup_suzukake
 }
 
 resource "google_compute_instance_template" "suzukakedai" {
-  name         = "suzukakedai"
+  name_prefix  = "suzukakedai-"
   machine_type = "e2-small"
 
   service_account {
@@ -102,10 +94,10 @@ resource "google_compute_instance_template" "suzukakedai" {
 
     enable-oslogin         = "TRUE"
     block-project-ssh-keys = "TRUE"
+  }
 
-    startup-script = file("../sslcert/startup-script.py")
-    certs-bucket   = google_storage_bucket.certificates.name
-    certs-name     = local.domain
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -123,14 +115,13 @@ resource "google_compute_health_check" "suzukakedai" {
 }
 
 resource "google_compute_region_instance_group_manager" "suzukakedai" {
-  name = "suzukakedai"
+  provider = google-beta
 
+  name               = "suzukakedai"
   base_instance_name = "suzukakedai"
 
-  target_size = 1
-  distribution_policy_zones = [
-    "asia-northeast1-c",
-  ]
+  target_size               = 1
+  distribution_policy_zones = ["${local.region}-c"]
 
   version {
     instance_template = google_compute_instance_template.suzukakedai.id
@@ -142,15 +133,26 @@ resource "google_compute_region_instance_group_manager" "suzukakedai" {
   }
 
   update_policy {
-    type                         = "OPPORTUNISTIC"
+    type                         = "PROACTIVE"
     minimal_action               = "REPLACE"
+    replacement_method           = "RECREATE"
     instance_redistribution_type = "NONE"
-    max_surge_fixed              = 1
     max_unavailable_fixed        = 1
   }
 
   auto_healing_policies {
     health_check      = google_compute_health_check.suzukakedai.id
     initial_delay_sec = 20
+  }
+
+  all_instances_config {
+    metadata = {
+      certs-bucket = google_storage_bucket.certificates.name
+      certs-name   = local.domain
+
+      user-data = templatefile("../sslcert/cloud-config.yaml", {
+        sync_certificates_py = base64encode(file("../sslcert/sync-certificates.py"))
+      })
+    }
   }
 }
