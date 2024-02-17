@@ -20,3 +20,7 @@ externalAuth:
     clientSecret: "dummyToken"
     allowSignUp: true
     allowedTeamId: "TFRFC1LJX"
+es:
+  url: http://elasticsearch:9200
+  username: elastic
+  password: "{{change this line}}"
