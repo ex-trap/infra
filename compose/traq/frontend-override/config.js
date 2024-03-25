@@ -17,7 +17,7 @@ const config = {
 		},
 		{
 			label: "ex-traP Wiki",
-			iconPath: "growi.svg",
+			iconPath: "crowi.svg",
 			appLink: "https://wiki.ex.trap.jp/",
 		},
 	],
