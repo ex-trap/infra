@@ -37,12 +37,12 @@ resource "google_compute_resource_policy" "daily_backup" {
     schedule {
       daily_schedule {
         days_in_cycle = 1
-        start_time    = "20:00"
+        start_time    = "22:00"
       }
     }
 
     retention_policy {
-      max_retention_days = 60
+      max_retention_days = 14
     }
   }
 }
