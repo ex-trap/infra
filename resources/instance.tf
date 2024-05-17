@@ -115,8 +115,6 @@ resource "google_compute_health_check" "suzukakedai" {
 }
 
 resource "google_compute_region_instance_group_manager" "suzukakedai" {
-  provider = google-beta
-
   name               = "suzukakedai"
   base_instance_name = "suzukakedai"
 

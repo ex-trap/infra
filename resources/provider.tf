@@ -9,10 +9,6 @@ provider "google" {
   project = "ex-trap"
   region  = local.region
 }
-provider "google-beta" {
-  project = "ex-trap"
-  region  = local.region
-}
 
 locals {
   region = "asia-northeast1"
