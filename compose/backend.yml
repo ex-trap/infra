@@ -34,7 +34,7 @@ services:
       ELASTIC_PASSWORD: "{{change this line}}"
 
   mysql:
-    image: mariadb:10.6.4
+    image: mariadb:10.11.9
     restart: always
     networks:
       - backend

@@ -8,7 +8,7 @@ networks:
 
 services:
   traq:
-    image: ghcr.io/traptitech/traq:3.18.0
+    image: ghcr.io/traptitech/traq:3.19.4
     restart: always
     networks:
       - frontend
@@ -27,7 +27,7 @@ services:
     command: serve
 
   traq-ui:
-    image: ghcr.io/traptitech/traq-ui:3.20.2
+    image: ghcr.io/traptitech/traq-ui:3.21.0
     restart: always
     networks:
       - frontend
