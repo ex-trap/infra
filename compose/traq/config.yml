@@ -12,12 +12,14 @@ gcp:
 firebase:
   serviceAccount:
     file: "./ex-trap-firebase-admin-sdk-credential.json"
-skyway:
-  secretKey: "dummyToken"
+livekit:
+  livekitHost: "https://ex-traq-pxziqicw.livekit.cloud"
+  livekitAPIKey: "APIHGjxskGg8aBf"
+  livekitAPISecret: "{{change this line}}"
 externalAuth:
   slack:
     clientId: "535522054643.2065746016128"
-    clientSecret: "dummyToken"
+    clientSecret: "{{change this line}}"
     allowSignUp: true
     allowedTeamId: "TFRFC1LJX"
 es:
