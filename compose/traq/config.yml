@@ -13,9 +13,9 @@ firebase:
   serviceAccount:
     file: "./ex-trap-firebase-admin-sdk-credential.json"
 livekit:
-  livekitHost: "https://ex-traq-pxziqicw.livekit.cloud"
-  livekitAPIKey: "APIHGjxskGg8aBf"
-  livekitAPISecret: "{{change this line}}"
+  host: "https://ex-traq-pxziqicw.livekit.cloud"
+  apiKey: "APIHGjxskGg8aBf"
+  apiSecret: "{{change this line}}"
 externalAuth:
   slack:
     clientId: "535522054643.2065746016128"
